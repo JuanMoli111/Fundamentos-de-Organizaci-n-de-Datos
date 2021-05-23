@@ -1,0 +1,18 @@
+Cod:   14    precio:    134.00    marca:        nombre:    	163	6132	
+Stock disponible:   631    stock minimo:    513    descripcion:    246
+
+Cod:   46    precio:    624.00    marca:        nombre:    	62	3	62
+Stock disponible:   2    stock minimo:    62    descripcion:    
+
+Cod:   14    precio:    134.00    marca:        nombre:    	163	6132	
+Stock disponible:   631    stock minimo:    513    descripcion:    246
+
+Cod:   46    precio:    624.00    marca:        nombre:    	62	3	62
+Stock disponible:   2    stock minimo:    62    descripcion:    
+
+Cod:   62    precio:    624.00    marca:        nombre:    	26	62	26
+Stock disponible:   624    stock minimo:    642    descripcion:    
+
+Cod:   62    precio:    624.00    marca:        nombre:    	26	62	26
+Stock disponible:   624    stock minimo:    642    descripcion:    
+
