@@ -75,6 +75,7 @@ begin
         //ALMACENA EL ALUMNO EN EL ARCHIVO MAESTRO
         write(maestro,min);
 
+
         //CONSIGUE EL MINIMO
         minimo(regd1,regd2,regd3,min);
     end;

@@ -26,9 +26,10 @@ begin
     else 
         dato.cod := valorAlto;
 end;
+// ACTUALIZACION 25/5/21 EL PROCEDURE MINIMO ES INCORRECTO ARREGLAR
 
-//PRECODNICION A CONSIDERAR, TODOS LOS ARCHIVOS ORDENADOS POR COD DE VENDEDOR DE FORMA ASCENDENTE
-//Minimo retorna, en el parámetro min, el vendedor con menor codigo del arreglo de archivos arc_deta, de longitud cantE 
+{PRECODNICION A CONSIDERAR, TODOS LOS ARCHIVOS ORDENADOS POR COD DE VENDEDOR DE FORMA ASCENDENTE
+Minimo retorna, en el parámetro min, el vendedor con menor codigo del arreglo de archivos arc_deta, de longitud cantE }
 procedure minimo(var arc_deta : arc_detalle; var reg_det: reg_detalle; var min: vendedor);
 var
 	i: integer;
@@ -45,8 +46,11 @@ begin
     while((i <= cantE) and (min <> valorAlto)) do begin
 
         //Si el codigo del vendedor actual es menor al cod del vendedor minimo, actualizar el vendedor minimo
+        //y leer el siguiente registro del archivo 
         if(reg_detalle[i].cod < min.cod) then begin
-            min := reg_detalle[i]
+            min := reg_detalle[i];
+            leer(arc_deta[i],reg_detalle[i]);
+        end;
 
         //Incrementa i
         i += 1;
@@ -63,7 +67,7 @@ var
     //ARC_DETA ES UN ARREGLO DE CANTE ARCHIVOS DE VENDEDORES, CANTE ES 100 EN ESTE EJEMPLO
     arc_deta: arc_detalle;
 
-    //REG_DET ES UN ARREGLO DE REGISTROS VENDEDOR, SIRVE PARA 
+    //REG_DET ES UN ARREGLO DE REGISTROS VENDEDOR, SIRVE PARA ¿?
     reg_det: reg_detalle;
 
     //ARCHIVO MAESTRO, ES UN ARCHIVO DE VENTAS

@@ -58,6 +58,7 @@ begin
 
     while(not eof(arcTxt)) do begin
         with c do readln(arcTxt,cod,precio,minStock,dispStock,nom,desc,marca);
+        
         write(arc_logico,c);
     end;
 

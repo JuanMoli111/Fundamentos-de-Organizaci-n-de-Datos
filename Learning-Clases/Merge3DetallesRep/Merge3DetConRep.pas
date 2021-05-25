@@ -20,6 +20,8 @@ type
     detalle = file of vendedor; 
     maestro = file of ventas;   
 
+//AGREGAR PROCEDURE MINIMO
+
 var 
     min, regd1, regd2, regd3: vendedor;
     det1, det2, det3: detalle;
@@ -36,7 +38,8 @@ begin
     rewrite (mae1);
     
     leer (det1, regd1);     leer (det2, regd2);     leer (det3, regd3);
-    minimo (regd1, regd2, regd3,min);
+    
+    minimo(regd1, regd2, regd3,min);
     
     while (min.cod <> valoralto) do begin
         regm.cod := min.cod;
