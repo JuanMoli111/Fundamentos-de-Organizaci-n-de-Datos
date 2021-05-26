@@ -14,7 +14,6 @@ const
     cantE = 5;
 
 type
-
     //Declara tipos rango para los dias meses y años de la fecha
     subr30    = 1..30;
     subr12  = 1..12;
