@@ -77,6 +77,7 @@ var
     regm: ventas;
     i, n: integer;
 
+    strIndice : string;
 begin
 
     //Deta es un arreglo con los archivos detalle
@@ -85,7 +86,8 @@ begin
     //Iterar el arreglo de archivos, haciendo su assign y abriendolos 
     for i := 1 to cantE do begin
 
-        assign(arc_deta[i], 'det' + str(i)); 
+        Str(i,strIndice) ;
+        assign(arc_deta[i], 'det' + strIndice); 
         
         reset(arc_deta[i]);
  

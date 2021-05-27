@@ -14,6 +14,7 @@ const
     cantE = 5;
 
 type
+
     //Declara tipos rango para los dias meses y años de la fecha
     subr30    = 1..30;
     subr12  = 1..12;
@@ -79,6 +80,7 @@ begin
             minPos := i;
         end;
     end;
+
 end;
 
 var
@@ -111,10 +113,6 @@ var
     strIndice : string;
 begin
 
-    //Assign y creacion del archivo maestro
-    assign(archMae,'var/log/maestro');
-    rewrite(archMae);
-
 
     for i := 1 to cantE do begin
         //Genera un string in strindice 
@@ -128,6 +126,9 @@ begin
 
     end;
 
+    //Assign y creacion del archivo maestro
+    assign(archMae,'maestro');
+    rewrite(archMae);
 
 
     //Calcula el primer registro sesion mínino del arreglo de sesion generado, lo retorna en ventamin 
@@ -143,7 +144,7 @@ begin
         fechAct := sesion_min.fech;
         dateChanged := False;
 
-        //Mientras la fecha del user que inició sea la misma
+        //Mientras el cod del user que inició sea el mismo
         while(not(dateChanged)) do begin
             //Actualiza la fecha actual (cambio la fecha)
             fechAct := sesion_min.fech;
@@ -169,7 +170,7 @@ begin
 
             end;
             
-            dateChanged := True;
+            dateChanged = True;
 
             //Cambió el user, almacenar sesion_semanal en el archivo maestro
             write(archMae,sesion_semanal);

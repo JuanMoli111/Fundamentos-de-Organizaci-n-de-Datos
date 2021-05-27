@@ -283,7 +283,7 @@ begin
     reset(arc_logico);
 
     //Asignar al nuevo archivo de texto su nombre fisico "reporteDetalle.txt"
-    assign(arcTxt,'reporteAlumnosINCISOF.txt');
+    assign(arcTxt,'var/log/reporteAlumnosINCISOF.txt');
     
     //Crea y abre el archivo de texto creado
     rewrite(arcTxt);
