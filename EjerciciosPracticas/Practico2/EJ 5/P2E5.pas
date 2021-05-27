@@ -43,8 +43,8 @@ type
         hora : hora;
     end;
 
-    //Declara registro con los datos requeridos para el archivo maestro
-    regMaestro = record
+    //Declara registro con los datos recopilados de la persona requeridos para el archivo maestro
+    regPersona = record
         nroPartida, matricula, matriculaDeceso, dniMama,    dniPapa :   integer;
         nombre,     apellido,   nombreMama, apellidoMama,   nombrePapa,   apellidoPapa, lugarDeceso: str20;
         dir : direccion;
@@ -53,7 +53,7 @@ type
     end;
 
     //Declara el tipo para archivo maestro
-    arcMaestro = file of regMaestro;
+    arcMaestro = file of regPersona;
 
     //Declara los tipos para los archivos de nacimientos y decesos
     arcNacimiento = file of nacimiento;
@@ -127,6 +127,7 @@ begin
 
 end;
 
+
 //DECLARACION DE VARIABLES
 var
     //Nombre logico para el archivo maestro
@@ -136,15 +137,19 @@ var
     arrArcNac : arr50ArcNacimientos;
     arrArcFal : arr50ArcFallecimientos;
 
+    //Declara un txt donde listará los datos recopilados de las personas
+    arcTxt: text;
+
+
     //Arreglos con registros de cada tipo, auxiliares
     arrRegNac : arr50Nacimientos;
     arrRegFal : arr50Fallecimientos;
 
-    //Registros aux
+    //Registros minimos, auxiliares 
     nac_min : nacimiento;
     fal_min : fallecimiento;
 
-    reg_mae : regMaestro;
+    reg_persona : regPersona;
 
     //Nro partida actual, indice
     nroPartAct, i, nacMinPos, falMinPos: integer;
@@ -152,6 +157,12 @@ var
     //Declara string util para los nombres fisicos de los archivos detalle
     strIndice : string;
 begin
+
+    //Assign del archivo TXT
+    assign(arcTxt,'listadoPersonas.txt');
+    
+    //Crea y abre el archivo de texto creado
+    rewrite(arcTxt);
 
     //Apertura de archivos detalle, generamos arreglos de registros auxiliares
     for i := 1 to cantE do begin
@@ -187,7 +198,7 @@ begin
     while(nac_min.nroPartida <> valorAlto)do begin
 
         //Hay un nuevo nacimiento generar un reg para el arc maestro con los datos por defecto de la persona (haya fallecido o no)
-        with reg_mae do begin
+        with reg_persona do begin
             nroPartida := nac_min.nroPartida;
             nombre := nac_min.nombre;
             apellido := nac_min.apellido;
@@ -205,7 +216,7 @@ begin
         if(nac_min.nroPartida = fal_min.nroPartida) then begin
 
             //LA PERSONA FALLECIO, ALMACENAR LOS DATOS CORRESPONDIENTES DE SU DETALLE DE DEFUNCION
-            with reg_mae do begin
+            with reg_persona do begin
 
                 dir := fal_min.dir;
                 matriculaDeceso := fal_min.matricula;
@@ -228,7 +239,7 @@ begin
         end
         else begin
             //LA PERSONA NO FALLECIO, DEJAR LOS CAMPOS NULOS O POR DEFECTO
-            with reg_mae do begin
+            with reg_persona do begin
                 dir := nac_min.dir;
                 matriculaDeceso := -1;
                 fecha.dia := -1;
@@ -250,10 +261,15 @@ begin
         end;
         
         //Almacena el reg con datos de la persona, en el archivo maestro
-        write(arcMae,reg_mae);
+        write(arcMae,reg_persona);
 
-
-
+        //CREAR EL TXT TAMBIEN...
+        with reg_persona do
+            //Escribir los datos del registro persona actual en el txt
+            writeln(arcTxt,'   ',nroPartida,'   ',matricula,'   ',matriculaDeceso,'   ',dniMama,'   ',dniPapa,'   ',
+                    fecha.dia,'   ',fecha.mes,'   ',fecha.anio,'   ',hora.horas,'   ',hora.minutos,'   ',dir.depto,'   ',
+                    dir.piso,'   ',dir.nro,'   ',dir.ciudad,'   ',dir.calle,'   ',nombre,'   ',apellido,'   ',
+                    nombreMama,'   ',apellidoMama,'   ',nombrePapa,'   ',apellidoPapa,'   ',lugarDeceso);
     end;
 
     //CIERRE DE ARCHIVOS
@@ -264,5 +280,5 @@ begin
     end;
 
     close(arcMae);
-
+    close(arcTxt)
 end.
