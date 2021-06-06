@@ -250,20 +250,21 @@ begin
                 lugarDeceso := 'NONE';
             end;
 
-            //Calcula el registro minimo, lo retorna en naci_min
-            minimoNacimientos(arrRegNac,nac_min,nacMinPos);
 
             //Lee el iésimo registro de los 50 archivos nacimientos, 
             //lo guarda en la iésima posicion del arreglo de registros nacimiento, actualizándolo
             leerDetNac(arrArcNac[nacMinPos],arrRegNac[nacMinPos]);
 
 
+            //Calcula el registro minimo, lo retorna en naci_min
+            minimoNacimientos(arrRegNac,nac_min,nacMinPos);
+
         end;
         
         //Almacena el reg con datos de la persona, en el archivo maestro
         write(arcMae,reg_persona);
 
-        //CREAR EL TXT TAMBIEN...
+
         with reg_persona do
             //Escribir los datos del registro persona actual en el txt
             writeln(arcTxt,'   ',nroPartida,'   ',matricula,'   ',matriculaDeceso,'   ',dniMama,'   ',dniPapa,'   ',
