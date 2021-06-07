@@ -210,7 +210,7 @@ begin
                                     //actualizar los asientos disponibles
                                     with regm do asientosDisp -= vueloAct.asientosComp;
 
-                                    // volver un regsitro atras en el archivo
+                                    // volver un registro atras en el archivo
                                     seek(maestro,filepos(maestro) - 1);
 
                                     //almacenar los datos actualizados
