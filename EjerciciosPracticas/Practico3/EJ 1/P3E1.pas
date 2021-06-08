@@ -277,7 +277,7 @@ begin
     leer(arc_logico,e);
 
     //PENDIENTE A ARREGLAR: si el empleado no existe informar el error
-    //El empleado existe seguro, avanza hasta encontrarlo
+    //suponga que el empleado existe seguro, avanza hasta encontrarlo
     while(e.nro <> nro) do leer(arc_logico,e);
 
     //Se avanza ignorando el empleado a eliminar
