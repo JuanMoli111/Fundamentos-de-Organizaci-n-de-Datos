@@ -176,27 +176,27 @@ begin
             vueloAct.dest := min.dest;
 
             //Mientras el anio siga siendo el mismo
-            while(min.fechaSalida.anio = vueloAct.fechaSalida.anio) do begin
+            while(min.dest = vueloAct.dest) and (min.fechaSalida.anio = vueloAct.fechaSalida.anio) do begin
                 //Guardar el anio actual
                 vueloAct.fechaSalida.anio := min.fechaSalida.anio;
 
                 //Mientras el mes siga siendo el mismo
-                while(min.fechaSalida.mes = vueloAct.fechaSalida.mes) do begin
+                while(min.dest = vueloAct.dest) and (min.fechaSalida.anio = vueloAct.fechaSalida.anio) and (min.fechaSalida.mes = vueloAct.fechaSalida.mes) do begin
                     //Guardar el mes actual
                     vueloAct.fechaSalida.mes := min.fechaSalida.mes;
 
                     //Mientras el dia siga siendo el mismo
-                    while(min.fechaSalida.dia = vueloAct.fechaSalida.dia) do begin
+                    while((min.dest = vueloAct.dest) and (min.fechaSalida.anio = vueloAct.fechaSalida.anio) and (min.fechaSalida.mes = vueloAct.fechaSalida.mes) and (min.fechaSalida.dia = vueloAct.fechaSalida.dia)) do begin
                         //Guardar el dia actual
                         vueloAct.fechaSalida.dia := min.fechaSalida.dia;
 
                         //Mientras la hora siga siendo la mismo
-                        while(min.horaSalida.hor = vueloAct.horaSalida.hor) do begin
+                        while((min.dest = vueloAct.dest) and (min.fechaSalida.anio = vueloAct.fechaSalida.anio) and (min.fechaSalida.mes = vueloAct.fechaSalida.mes) and (min.fechaSalida.dia = vueloAct.fechaSalida.dia) and (min.horaSalida.hor = vueloAct.horaSalida.hor)) do begin
                             //Guardar la hora actual
                             vueloAct.horaSalida.hor := min.horaSalida.hor;
 
                             //Mientras los minutos sigan siendo el mismo
-                            while(min.horaSalida.min = vueloAct.horaSalida.min) do begin
+                            while((min.dest = vueloAct.dest) and (min.fechaSalida.anio = vueloAct.fechaSalida.anio) and (min.fechaSalida.mes = vueloAct.fechaSalida.mes) and (min.fechaSalida.dia = vueloAct.fechaSalida.dia) and (min.horaSalida.hor = vueloAct.horaSalida.hor) and (min.horaSalida.min = vueloAct.horaSalida.min)) do begin
                                 //Guardar el minuto actual
                                 vueloAct.horaSalida.min := min.horaSalida.min;
 

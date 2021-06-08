@@ -119,13 +119,13 @@ begin
             //Reiniciar los contadores totales por division
             totHorasDiv := 0;   totMontoDiv := 0;
 
-            while(info_emp.division = divAct) do begin
+            while((info_emp.depto = deptoAct) and (info_emp.division = divAct)) and do begin
 
                 //Informar en forma de lista    
                 writeln('Numero de Empleado     Total de Hs.    Importa a cobrar');
 
 
-                while(info_emp.nro = nroAct) do begin
+                while((info_emp.depto = deptoAct) and (info_emp.division = divAct) and (info_emp.nro = nroAct)) do begin
 
 
                     //El importe a cobrar es la cat del empleado por el valor q haya en el arreglo, en la pos categ del empleado

@@ -90,7 +90,7 @@ begin
             totLoc := 0;
 
             //Mientras la localidad sea la misma...
-            while(mesa.codLoc = codLocAct) do begin
+            while((mesa.codProv = codProvAct) and (mesa.codLoc = codLocAct)) do begin
 
                 //Acumular los votos en los contadores provincial, local y total
                 totProv += mesa.votos;

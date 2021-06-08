@@ -137,7 +137,7 @@ begin
 
 
             //Mientras el mes siga siendo el mismo, y haya registros en el archivo
-            while((regAcc.mes = accAct.mes) AND (regAcc.mes <> 0)) do begin
+            while((regAcc.anio = anioInforme) AND (regAcc.mes = accAct.mes)) do begin
 
                 //Informar con formato
                 writeln('Dia :  ',regAcc.dia);
@@ -147,7 +147,7 @@ begin
 
 
                 //Mientras el dia siga siendo el mismo, y haya registros en el archivo
-                while((regAcc.dia = accAct.dia) and (regAcc.dia <> 0)) do begin
+                while((regAcc.anio = anioInforme) AND (regAcc.mes = accAct.mes) and (regAcc.dia = accAct.dia)) do begin
 
                     //Informar con formato
                     writeln('idUsuario :  ',regAcc.id);
@@ -158,7 +158,7 @@ begin
 
                     //Mientras el id de usuario siga siendo el mismo, y haya registros en el archivo
 
-                    while((regAcc.id = accAct.id) and (regAcc.id <> valorAlto)) do begin
+                    while((regAcc.anio = anioInforme) AND (regAcc.mes = accAct.mes) and (regAcc.dia = accAct.dia) and (regAcc.id = accAct.id)) do begin
                         //Sumar al contador total tiempo por usuario
                         totId += regAcc.tiempo;
 

@@ -92,13 +92,13 @@ begin
 
             writeln('EN EL ANIO: ', anioAct);
 
-            while(v.date.anio = anioAct) do begin
+            while((v.cod = codAct) and (v.date.anio = anioAct) and ) do begin
 
                 //Cambió de mes, actualice mes actual
                 mesAct := v.date.mes;
                 totMensual := 0;
 
-                while(v.date.mes = mesAct) do begin
+                while((v.cod = codAct) and (v.date.anio = anioAct) and (v.date.mes = mesAct)) do begin
 
                     //Ir acumulando los montos de cada compra en los contadores totales mensual y anual
                     totMensual += v.monto;
