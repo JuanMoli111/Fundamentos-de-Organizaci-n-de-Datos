@@ -67,65 +67,6 @@ type
     arr50ArcNacimientos = array[1..cantE] of arcNacimiento;
     arr50ArcFallecimientos = array[1..cantE] of arcFallecimiento;
 
-//Procedure de lectura de archivos nacimiento, con valoralto de corte 
-procedure leerDetNac(var arc_detalle : arcNacimiento; var dato: nacimiento);
-begin
-    if(not(eof(arc_detalle))) then
-        read(arc_detalle,dato)
-    else
-        dato.nroPartida := valorAlto;
-end;
-
-//Procedure de lectura de archivos fallecimiento, con valoralto de corte 
-procedure leerDetFall(var arc_detalle: arcFallecimiento;var dato: fallecimiento);
-begin
-    if(not(eof(arc_detalle))) then
-        read(arc_detalle,dato)
-    else
-        dato.nroPartida := valorAlto;
-end;
-
-//Calcula el registro con menor codigo de un arreglo de cantE archivos de registros nacimiento, 
-//lo retorna en min y retorna el índice del arreglo donde se encontró, se avanzará en el archivo de tal indice
-//en el arreglo de archivos detalle, antes de volver a mandar el arreglo de registros y calcular el siguiente minimo
-procedure minimoNacimientos(var arrNacimientos: arr50Nacimientos; var min : nacimiento; var minPos: integer);
-var
-	i: integer;
-begin
-    //Itera a traves del arreglo de registros
-    for i := 1 to cantE do begin
-        //Si el codigo del nacimiento actual es menor al cod sesion minimo, actualizar el nacimiento minimo
-        if(arrNacimientos[i].nroPartida < min.nroPartida) then begin
-            //Guarda la posicion donde está el min en el arreglo de nacimientos
-            minPos := i;
-        end;
-    end;
-
-    //Usa minPos para conseguir el elemento minimo, lo retorna en min
-    min := arrNacimientos[minPos];
-
-end;
-//Calcula el registro con menor codigo de un arreglo de cantE archivos de registros fallecimiento, 
-//lo retorna en min y retorna el índice del arreglo donde se encontró, se avanzará en el archivo de tal indice
-//en el arreglo de archivos detalle, antes de volver a mandar el arreglo de registros y calcular el siguiente minimo
-procedure minimoFallecimientos(var arrFallecimientos: arr50Fallecimientos; var min: fallecimiento; var minPos: integer);
-var
-	i: integer;
-begin
-
-    //Itera a traves del arreglo de registros
-    for i := 1 to cantE do begin
-        //Si el codigo de la sesion actual es menor al cod sesion minimo, actualizar la sesion minima
-        if(arrFallecimientos[i].nroPartida < min.nroPartida) then begin
-            //Guarda la posicion donde se encontró el minimo en minPos para retornarla
-            minPos := i;
-        end;
-    end;
-
-    //Usa minPos para conseguir el elemento minimo, lo retorna en min
-    min := arrFallecimientos[minPos];
-
-end;
 
 
 //DECLARACION DE VARIABLES
@@ -152,10 +93,75 @@ var
     reg_persona : regPersona;
 
     //Nro partida actual, indice
-    nroPartAct, i, nacMinPos, falMinPos: integer;
+    nroPartAct, i: integer;
 
     //Declara string util para los nombres fisicos de los archivos detalle
     strIndice : string;
+
+
+
+//Procedure de lectura de archivos nacimiento, con valoralto de corte 
+procedure leerDetNac(var arc_detalle : arcNacimiento; var dato: nacimiento);
+begin
+    if(not(eof(arc_detalle))) then
+        read(arc_detalle,dato)
+    else
+        dato.nroPartida := valorAlto;
+end;
+
+//Procedure de lectura de archivos fallecimiento, con valoralto de corte 
+procedure leerDetFall(var arc_detalle: arcFallecimiento;var dato: fallecimiento);
+begin
+    if(not(eof(arc_detalle))) then
+        read(arc_detalle,dato)
+    else
+        dato.nroPartida := valorAlto;
+end;
+
+//Calcula el registro con menor codigo de un arreglo de cantE archivos de registros nacimiento, 
+//lo retorna en min y retorna el índice del arreglo donde se encontró, se avanzará en el archivo de tal indice
+//en el arreglo de archivos detalle, antes de volver a mandar el arreglo de registros y calcular el siguiente minimo
+procedure minimoNacimientos(var arrNacimientos: arr50Nacimientos; var min : nacimiento);
+var
+	minPos, i: integer;
+
+begin
+    //Itera a traves del arreglo de registros
+    for i := 1 to cantE do begin
+        //Si el codigo del nacimiento actual es menor al cod sesion minimo, actualizar el nacimiento minimo
+        if(arrNacimientos[i].nroPartida < min.nroPartida) then begin
+            //Guarda la posicion donde está el min en el arreglo de nacimientos
+            minPos := i;
+        end;
+    end;
+
+    //Usa minPos para conseguir el elemento minimo, lo retorna en min
+    //min := arrNacimientos[minPos];
+    leerDetNac(arrArcNac[minPos],min);
+end;
+//Calcula el registro con menor codigo de un arreglo de cantE archivos de registros fallecimiento, 
+//lo retorna en min y retorna el índice del arreglo donde se encontró, se avanzará en el archivo de tal indice
+//en el arreglo de archivos detalle, antes de volver a mandar el arreglo de registros y calcular el siguiente minimo
+procedure minimoFallecimientos(var arrFallecimientos: arr50Fallecimientos; var min: fallecimiento);
+var
+	minPos, i: integer;
+begin
+
+    //Itera a traves del arreglo de registros
+    for i := 1 to cantE do begin
+        //Si el codigo de la sesion actual es menor al cod sesion minimo, actualizar la sesion minima
+        if(arrFallecimientos[i].nroPartida < min.nroPartida) then begin
+            //Guarda la posicion donde se encontró el minimo en minPos para retornarla
+            minPos := i;
+        end;
+    end;
+
+    //Usa minPos para conseguir el elemento minimo, lo retorna en min
+    //min := arrFallecimientos[minPos];
+    leerDetFall(arrArcFal[minPos],min)
+end;
+
+
 begin
 
     //Assign del archivo TXT
@@ -163,6 +169,9 @@ begin
     
     //Crea y abre el archivo de texto creado
     rewrite(arcTxt);
+
+    writeln('WHATSGOINGON');
+
 
     //Apertura de archivos detalle, generamos arreglos de registros auxiliares
     for i := 1 to cantE do begin
@@ -175,8 +184,8 @@ begin
         assign(arrArcFal[i],'detFal' + strIndice);
 
         //Apertura de los archivos detalle
-        reset(arrArcNac[i]);
-        reset(arrArcFal[i]);
+        rewrite(arrArcNac[i]);
+        rewrite(arrArcFal[i]);
 
 
         //Lee el iésimo registro de los 50 archivos nacimientos, 
@@ -191,9 +200,13 @@ begin
     assign(arcMae,'maestro');
     rewrite(arcMae);
 
+
+
     //Calcula los registros minimos, los retorna en naci_min y fall_min
-    minimoNacimientos(arrRegNac,nac_min,nacMinPos);
-    minimoFallecimientos(arrRegFal,fal_min,falMinPos);
+    minimoNacimientos(arrRegNac,nac_min);
+    minimoFallecimientos(arrRegFal,fal_min);
+
+
 
     while(nac_min.nroPartida <> valorAlto)do begin
 
@@ -225,16 +238,16 @@ begin
                 lugarDeceso := fal_min.lugar;
             end;
 
-            //Lee el iésimo registro de los 50 archivos fallecimientos, 
+            {//Lee el iésimo registro de los 50 archivos fallecimientos, 
             //lo guarda en la iésima posicion del arreglo de registros fallecimiento, actualizándolo
             leerDetFall(arrArcFal[falMinPos],arrRegFal[falMinPos]);
             //Lee el iésimo registro de los 50 archivos nacimientos, 
             //lo guarda en la iésima posicion del arreglo de registros nacimiento, actualizándolo
-            leerDetNac(arrArcNac[nacMinPos],arrRegNac[nacMinPos]);
+            leerDetNac(arrArcNac[nacMinPos],arrRegNac[nacMinPos]);}
 
             //Calcula los registros minimos, los retorna en naci_min y fall_min
-            minimoNacimientos(arrRegNac,nac_min,nacMinPos);
-            minimoFallecimientos(arrRegFal,fal_min,falMinPos);
+            minimoNacimientos(arrRegNac,nac_min);
+            minimoFallecimientos(arrRegFal,fal_min);
 
         end
         else begin
@@ -253,11 +266,11 @@ begin
 
             //Lee el iésimo registro de los 50 archivos nacimientos, 
             //lo guarda en la iésima posicion del arreglo de registros nacimiento, actualizándolo
-            leerDetNac(arrArcNac[nacMinPos],arrRegNac[nacMinPos]);
+            {leerDetNac(arrArcNac[nacMinPos],arrRegNac[nacMinPos]);}
 
 
             //Calcula el registro minimo, lo retorna en naci_min
-            minimoNacimientos(arrRegNac,nac_min,nacMinPos);
+            minimoNacimientos(arrRegNac,nac_min);
 
         end;
         
