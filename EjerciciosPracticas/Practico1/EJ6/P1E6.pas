@@ -1,4 +1,4 @@
-program ej5;
+program ej6;
 type
 
     str25 = string[25];
@@ -12,7 +12,20 @@ type
     arc_bin_celulares = file of celular;
 
     arc_txt_celulares = text;
-
+procedure LeerCelular(var c: celular);
+begin
+    with c do begin
+        writeln('Ingrese el nombre del celular, para salir ingrese fin');   readln(nom);
+        if(nom <> 'fin') then begin
+            writeln('Ingrese el codigo');           readln(cod);
+            writeln('Ingrese el stock minimo');     readln(stockMin);
+            writeln('Ingrese el stock disponible'); readln(stockDisp);
+            writeln('Ingrese el precio');           readln(precio);
+            writeln('Ingrese la descripcion');      readln(desc);
+            writeln('Ingrese la marca ');           readln(marca);
+        end;
+    end;
+end;
 procedure CrearBinarioConTxt(var arc_bin: arc_bin_celulares);
 var
     arc_txt: arc_txt_celulares;
@@ -114,14 +127,95 @@ begin
     close(arc_bin);
     close(arc_txt);
 end;
+procedure AgregarCelulares(var arc_bin: arc_bin_celulares);
+var
+    c: celular;
+begin
+
+    reset(arc_bin);
+
+    //Seek a la ultima posicion del archivo
+    seek(arc_bin,FileSize(arc_bin));
+
+    LeerCelular(c);
+
+    //Mientras el nombre del cel  no sea fin, escribir sus datos en el archivo y leer un nuevo cel
+    while(c.nom <> 'fin') do begin
+        write(arc_bin,c);
+        LeerCelular(c);
+    end;
+
+    close(arc_bin);
+end;
+procedure ModificarStock(var arc_bin: arc_bin_celulares);
+var
+    c: celular;
+    nombre : str25;
+    encontro: boolean;
+begin
+    //Abrir el archivo binario
+    reset(arc_bin);
+
+    writeln('Ingrese el nombre de un celular a modificar su stock');
+    readln(nombre);
+
+    encontro := false;
+
+    while((not(eof(arc_bin))) and (not(encontro))) do begin
+        //Leer un celular
+        read(arc_bin,c);
+
+        //Si es el celular con el nombre que pidio el usuario 
+        if(c.nom = nombre)then begin
+            encontro := true;
+
+            //Leer el nuevo stock
+            writeln('Ingrese el stock actualizado');
+            readln(c.stockDisp);
+
+            //Volver a la posicion del celular a modificar;
+            seek(arc_bin,FilePos(arc_bin) - 1);
+            //Escribir al archivo con el nuevo celular actualizado
+            write(arc_bin,c);
+
+        end;
+    
+    end;
+
+    if not(encontro) then write('No se encontro ese celular');
+
+    close(arc_bin);
+end;
+procedure CrearTxtConCelularesSinStock(var arc_bin: arc_bin_celulares);
+var
+    arc_txt : arc_txt_celulares;
+    c: celular;
+begin
+    //Abrir el archivo binario
+    reset(arc_bin);
+    //Asociar los arc logico-fisico de texto
+    assign(arc_txt,'SinStock.txt');
+
+    //Crear el archivo de texto
+    rewrite(arc_txt);
+
+    while(not(eof(arc_bin))) do begin
+        //Leer un celular
+        read(arc_bin,c);
+        //Si el stock es cero escribir sus datos en el archivo de texto
+        with c do if(stockDisp = 0) then write(arc_txt,'     ',cod,'     ',precio,'     ',stockMin,'      ',stockDisp,'       ',desc,'      ',marca,'       ',nom);
+    end;
+
+    close(arc_bin);
+    close(arc_txt);
+end;
 var
 
     opc: integer;
 
     arc_bin : arc_bin_celulares;
-    arc_txt1, arc_txt2 : arc_txt_celulares;
+    arc_txt1, arc_txt2, arc_txt3 : arc_txt_celulares;
     
-
 begin
 
 
@@ -133,6 +227,9 @@ begin
         writeln('2: Listar celulares con stock menor al minimo');
         writeln('3: Listar celular cuya descripcion contenga una cadena ingresada por el usuario');
         writeln('4: Exportar el archivo binario generado a un nuevo archivo de texto');
+        writeln('5: Añadir celulares al archivo');
+        writeln('6: Modificar el stock de un celular ');
+        writeln('7: Crear un txt con los celulares sin stock disponible');
         writeln('0: Salir');
 
 
@@ -148,7 +245,11 @@ begin
 
             4:  CrearTxtConBinario(arc_bin,arc_txt2);
 
+            5:  AgregarCelulares(arc_bin);
 
+            6:  ModificarStock(arc_bin);
+
+            7:  CrearTxtConCelularesSinStock(arc_bin);
         end;
 
     until(opc = 0);
