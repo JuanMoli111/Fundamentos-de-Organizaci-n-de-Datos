@@ -30,7 +30,7 @@ end;
 
 {PRECODNICION A CONSIDERAR, TODOS LOS ARCHIVOS ORDENADOS POR COD DE VENDEDOR DE FORMA ASCENDENTE
 Minimo retorna, en el parámetro min, el vendedor con menor codigo del arreglo de archivos arc_deta, de longitud cantE }
-procedure minimo(var arc_deta : arc_detalle; var reg_det: reg_detalle; var min: vendedor);
+{procedure minimo(var arc_deta : arc_detalle; var reg_det: reg_detalle; var min: vendedor);
 var
 	i: integer;
 begin
@@ -59,7 +59,7 @@ begin
         leer(arc_deta[i],reg_detalle[i])
 	end;
 
-end;
+end;}
 var 
     //MIN ES UN REGISTRO VENDEDOR Y SIRVE DE VARIABLE AUXILIAR PARA CALCULAR EL VENDEDOR DE MENOR COD
     min: vendedor;

@@ -113,6 +113,8 @@ begin
     leer(arreglo_ventas[posMin],reg_ventas[posMin]);
 
 
+    //{EL CODIGO ES ERRONEO LEE EL PRIMER PRODUCTO Y ACTUALIZA SU STOCK SIN VERIFICAR QUE SEA DEL MISMO TIPO}
+
     //Lee el primer producto del archivo maestro
     read(arc_productos,prod);
 
