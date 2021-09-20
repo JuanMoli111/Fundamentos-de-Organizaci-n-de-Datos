@@ -12,8 +12,6 @@ program ej3;
                 *  5 - PODRIA NO SER NECESARIO RECORRER TODO EL ARCHIVO MAESTRO (por precondicion 3)
 
 
-
-
 }
 const
     dimF = 30;
@@ -59,7 +57,8 @@ var
     codAct, i, totVendido : integer;
 
     str : string;
-
+    
+//DEVOLVER SIGUIENTE REGISTRO DE UN ARCHIVO, SI ES EOF DEVOLVER UN VALOR DE CORTE
 procedure leerDet(var arc: detalle_ventas; var dato: venta);
 begin
     if(not(eof(arc))) then
