@@ -269,7 +269,7 @@ begin
             {leerDetNac(arrArcNac[nacMinPos],arrRegNac[nacMinPos]);}
 
 
-            //Calcula el registro minimo, lo retorna en naci_min
+            //Calcula el registro minimo, lo retorna en nac_min
             minimoNacimientos(arrRegNac,nac_min);
 
         end;
