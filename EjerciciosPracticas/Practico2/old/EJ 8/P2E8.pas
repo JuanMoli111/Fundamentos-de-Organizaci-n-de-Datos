@@ -6,6 +6,9 @@ program P2E8;
     //  -MAESTRO ORDENADO POR COD DE CLIENTE, LUEGO AÑO DE LA VENTA, LUEGO MES DE LA VENTA
     //  -
 
+
+    
+
 const
 
     valorAlto = -9999;
@@ -72,6 +75,8 @@ begin
     total := 0;
 
     while(v.cod <> valorAlto) do begin
+
+        //Actualizacionn al 22/9/2021  este bloque with no tiene sentido, el programa en general es mejorable y se resolvio mejor en la carpeta Recu
 
         //Nuevo registro venta, (cambió el usuario), actualizar las variablaes auxiliares act
         with v do begin
