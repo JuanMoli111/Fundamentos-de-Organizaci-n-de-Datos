@@ -76,9 +76,9 @@ var
     provAct : str15;
 begin
     //Abrir archivos
-    reset(arc_mae);
-    reset(arc_det1);
-    reset(arc_det2);
+    rewrite(arc_mae);
+    rewrite(arc_det1);
+    rewrite(arc_det2);
 
 
     //Leer el primer registro de cada archivo detalle
