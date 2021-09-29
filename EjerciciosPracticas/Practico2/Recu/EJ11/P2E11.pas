@@ -134,6 +134,8 @@ begin
         write(maestro,regm);
     
     
+        
+
         if(not(eof(maestro))) then read(maestro,regm);
 
     end;
