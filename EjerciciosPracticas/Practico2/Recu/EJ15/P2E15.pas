@@ -117,9 +117,6 @@ begin
     minimo(regs,min);
 
 
-    write('done');
-
-
     //Mientras haya datos en los detalle
     while(min.dni <> valorAlto) do begin
 
