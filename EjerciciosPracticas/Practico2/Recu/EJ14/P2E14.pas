@@ -59,13 +59,6 @@ type
         sig : lista;
     end;
 
-var
-    vec_det : vec_detalle;
-
-    maestro : arc_maestro;
-
-
-
 
 //DEVOLVER SIGUIENTE REGISTRO DE UN ARCHIVO, SI ES EOF DEVOLVER UN VALOR DE CORTE
 procedure leerDet(var det: arc_detalle; var dato : compraVuelo);
@@ -76,13 +69,6 @@ begin
         dato.dest := valorAlto;
 end;
 
-procedure leerMae(var mae: arc_maestro; var dato : proxVuelo);
-begin
-    if(not(eof(mae))) then
-        read(mae,dato)
-    else
-        dato.dest := valorAlto;
-end;
 
 
 //Procedimiento para agregar un nodo a una lista
@@ -97,30 +83,33 @@ begin
 end;
 
 
-{   --RECIBE UN VECTOR DE REGISTROS Y RETORNA EL MINIMO POR DESTINO FECHA Y HORA, EN EL PARAMETRO MIN.
-    --ACTUALIZA Y RETORNA EL VECTOR DE REGISTROS LEYENDO EL SIGUIENTE DATO DEL DETALLE CORRESPONDIENTE    }
-procedure minimo(var vec_r: vec_reg_detalle; var min: compraVuelo);
-var
-    minPos, i : integer;
+procedure minimo (var regs: vec_reg_detalle; var dets: vec_detalle; var min: compraVuelo);
+var i, posMin: integer;
 begin
 
-    //Recorrer los reg detalle, consiguiendo la posicion del minimo
-    for i := 1 to dimF do begin
-        if((vec_r[i].dest < min.dest) or ((vec_r[i].dest = min.dest) and (vec_r[i].fecha < min.fecha)) or
-          ((vec_r[i].dest = min.dest) and (vec_r[i].fecha = min.fecha) and (vec_r[i].hora < min.hora))) then minPos := i;
-    end;
+    //Inicializar pos y registro MIN en valorALTO
+	posMin:= 0;
+	min.dest := valoralto;
+	min.fecha := valorAlto;
+	min.hora := valorAlto;
 
+	for i:=1 to dimF do begin
+		if(regs[i].dest <= min.dest) then begin
+			if (regs[i].fecha <= min.fecha) then begin
+				if (regs[i].hora <= min.hora) then begin
+					min := regs[i];
+					posMin := i;
+				end;
+			end;
+		end;
+	end;
 
-    writeln('Error de ejecucion en la siguiente linea');
-    //El registro minimo es el que esta en la posicion minPos 
-    min := vec_r[minPos];
+    //Si hubo un nuevo dato minimo, leer un dato siguiente en el indice calculado
+	if (posMin <> 0) then
+		leerDet(dets[posMin], regs[posMin]);
 
-    //Leer en el archivo detalle correspondiente, almacenar el siguiente registro en el vector de reg
-    leerDet(vec_det[minPos],vec_r[minPos]);
 end;
-
-
-procedure ActualizarMaestro(var mae: arc_maestro; var vec_det: vec_detalle; var vec_reg: vec_reg_detalle);
+procedure ActualizarMaestro(var mae: arc_maestro; var dets: vec_detalle; var regs: vec_reg_detalle);
 var
     min : compraVuelo;
     vuelo : proxVuelo;
@@ -136,23 +125,20 @@ begin
 
     //Abrir detalles y leer registros
     for i := 1 to dimF do begin
+        assign(dets[i],'det ' + IntToStr(i));
 
-        assign(vec_det[i],'det ' + IntToStr(i));
+        rewrite(dets[i]);
 
-        rewrite(vec_det[i]);
-        leerDet(vec_det[i],vec_reg[i]);
+        leerDet(dets[i],regs[i]);
     end;
 
 
-    //Error de ejecucion idk why ¿?
-    writeln('Error de ejecucion en la siguiente linea');
-
     //Calcular el reg minimo
-    minimo(vec_reg,min);
+    minimo(regs,dets,min);
 
 
     //leer el primer reg maestro
-    leerMae(mae,vuelo);
+    if(not(eof(mae))) then read(mae,vuelo);
 
 
     //Mientras haya registros en los archivos detalle
@@ -180,7 +166,7 @@ begin
                     totComprado += min.cantComprado;
 
                     //Leer un nuevo minimo
-                    minimo(vec_reg,min);
+                    minimo(regs,dets,min);
 
                 end;
                 
@@ -195,7 +181,7 @@ begin
                 write(mae,vuelo);
 
                 //Leer un registro maestro
-                leerMae(mae,vuelo);
+                if(not(eof(mae))) then read(mae,vuelo);
 
             end;
         end;
@@ -203,7 +189,7 @@ begin
 
     //Cerrar archivos
     close(mae);
-    for i := 1 to dimF do close(vec_det[i]);
+    for i := 1 to dimF do close(dets[i]);
 end;
 
 
@@ -216,20 +202,14 @@ begin
     //Abrir arch maestro
     reset(mae);
 
-    //Leer primer registro
-    leerMae(mae,vuelo);
-
 
     write('Ingrese una cantidad de asientos: ');
     readln(inputNum);
 
-
     //Mientras haya registros en el archivo maestro
-    while(vuelo.dest <> valorAlto) do begin
-
+    while(not(eof(mae))) do begin
+        read(mae,vuelo);
         if(vuelo.lugarDisp < inputNum) then agregarNodo(l,vuelo);
-
-        leerMae(mae,vuelo);
 
     end;
 
@@ -239,16 +219,26 @@ begin
     close(mae);
 end;
 //DECLARACION DE VARIABLES
+
 var
+    vec_det : vec_detalle;
+
+    maestro : arc_maestro;
+
     //Vector de reg detalle 
     vec_reg : vec_reg_detalle;
 
+    regm : proxVuelo;
+
     l : lista;
+
+    i: integer;
 begin
 
     //Assign de los archivos maestro y detalles
     assign(maestro,'maestro');
     rewrite(maestro);
+
     //Inicializar lista
     l := nil;
 

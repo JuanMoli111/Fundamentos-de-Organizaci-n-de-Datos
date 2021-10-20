@@ -61,8 +61,10 @@ var
     minPos, i : integer;
 begin
 
+    min := regs[1];
+
     //Recorrer los reg detalle, consiguiendo la posicion del minimo
-    for i := 1 to dimF do 
+    for i := 2 to dimF do 
         if((regs[i].fecha < min.fecha) or ((regs[i].fecha = min.fecha) and (regs[i].cod < min.cod))) then minPos := i;
 
 

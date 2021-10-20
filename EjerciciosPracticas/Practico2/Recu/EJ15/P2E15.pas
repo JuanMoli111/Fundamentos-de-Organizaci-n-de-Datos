@@ -79,6 +79,7 @@ procedure minimo(var regs: vec_reg; var min: pago);
 var
     minPos, i : integer;
 begin
+    min := regs[1];
 
     //Recorrer los reg detalle, consiguiendo la posicion del minimo
     for i := 1 to dimF do begin
@@ -91,7 +92,28 @@ begin
     //Leer en el archivo detalle correspondiente, almacenar el siguiente registro en el vector de reg
     leerDet(dets[minPos],regs[minPos]);
 end;
+procedure minimo (var reg: vec_reg_detalle; var detalle: vec_detalle; var min: compraVuelo);
+var i, posMin: integer;
+begin
+	posMin:= 0;
+	min.dest := valoralto;
+	min.fecha := valorAlto;
+	min.hora := valorAlto;
 
+	for i:=1 to dimF do begin
+		if(reg[i].dest <= min.dest) then begin
+			if (reg[i].fecha <= min.fecha) then begin
+				if (reg[i].hora <= min.hora) then begin
+					min := reg[i];
+					posMin := i;
+				end;
+			end;
+		end;
+	end;
+
+	if (posMin <> 0) then
+		leerDet(detalle[posMin], reg[posMin]);
+end;
 procedure ActualizarMaestro(var mae: maestro);
 var
     regm: inscripto;
