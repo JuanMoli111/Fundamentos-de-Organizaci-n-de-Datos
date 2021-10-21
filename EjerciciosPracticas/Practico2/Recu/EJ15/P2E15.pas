@@ -53,14 +53,6 @@ type
     vec_det = array[1..dimF] of detalle;
     vec_reg = array[1..dimF] of pago;
 
-var
-
-    dets : vec_det;
-    regs : vec_reg;
-
-    mae: maestro;
-
-    i : integer;
 
 
 //DEVOLVER SIGUIENTE REGISTRO DE UN ARCHIVO, SI ES EOF DEVOLVER UN VALOR DE CORTE
@@ -75,51 +67,34 @@ end;
 
 {   --RECIBE UN VECTOR DE REGISTROS Y RETORNA EL MINIMO POR DESTINO FECHA Y HORA, EN EL PARAMETRO MIN.
     --ACTUALIZA Y RETORNA EL VECTOR DE REGISTROS LEYENDO EL SIGUIENTE DATO DEL DETALLE CORRESPONDIENTE    }
-procedure minimo(var regs: vec_reg; var min: pago);
-var
-    minPos, i : integer;
-begin
-    min := regs[1];
-
-    //Recorrer los reg detalle, consiguiendo la posicion del minimo
-    for i := 1 to dimF do begin
-        if((regs[i].dni < min.dni) or ((regs[i].dni = min.dni) and (regs[i].cod < min.cod))) then minPos := i;
-    end;
-
-    //El registro minimo es el que esta en la posicion minPos 
-    min := regs[minPos];
-
-    //Leer en el archivo detalle correspondiente, almacenar el siguiente registro en el vector de reg
-    leerDet(dets[minPos],regs[minPos]);
-end;
-procedure minimo (var reg: vec_reg_detalle; var detalle: vec_detalle; var min: compraVuelo);
-var i, posMin: integer;
+procedure minimo (var regs: vec_reg; var detalle: vec_det; var min: pago);
+var 
+    i, posMin: integer;
 begin
 	posMin:= 0;
-	min.dest := valoralto;
-	min.fecha := valorAlto;
-	min.hora := valorAlto;
+    
+	min.dni := valoralto;
+	min.cod := valorAlto;
 
 	for i:=1 to dimF do begin
-		if(reg[i].dest <= min.dest) then begin
-			if (reg[i].fecha <= min.fecha) then begin
-				if (reg[i].hora <= min.hora) then begin
-					min := reg[i];
-					posMin := i;
-				end;
+		if(regs[i].dni <= min.dni) then begin
+			if (regs[i].cod <= min.cod) then begin
+				min := regs[i];
+				posMin := i;	
 			end;
 		end;
 	end;
 
 	if (posMin <> 0) then
-		leerDet(detalle[posMin], reg[posMin]);
+		leerDet(detalle[posMin], regs[posMin]);
 end;
-procedure ActualizarMaestro(var mae: maestro);
+
+procedure ActualizarMaestro(var mae: maestro; var dets: vec_det; var regs: vec_reg);
 var
     regm: inscripto;
     min: pago;
 
-    dniAct, codAct : integer;
+    dniAct, codAct, i : integer;
 begin
     //Abrir archivo maestro
     reset(mae);
@@ -136,7 +111,7 @@ begin
     if(not(eof(mae))) then read(mae,regm);
 
     //Calcular el minimo de los regs detalle leidos
-    minimo(regs,min);
+    minimo(regs,dets,min);
 
 
     //Mientras haya datos en los detalle
@@ -161,7 +136,7 @@ begin
                 regm.monto += min.monto;
 
 
-                minimo(regs,min);
+                minimo(regs,dets,min);
 
             end;
 
@@ -205,6 +180,12 @@ begin
     //Cerrar archivo maestro
     close(mae);
 end;
+var
+
+    dets : vec_det;
+    regs : vec_reg;
+
+    mae: maestro;
 begin
 
     assign(mae,'maestro');
@@ -212,7 +193,7 @@ begin
 
 
 
-    ActualizarMaestro(mae);
+    ActualizarMaestro(mae,dets,regs);
 
     GenerarTxt(mae);
 

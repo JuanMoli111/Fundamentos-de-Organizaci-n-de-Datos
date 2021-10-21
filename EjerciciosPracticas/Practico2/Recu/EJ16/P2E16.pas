@@ -54,25 +54,34 @@ begin
     else
         dato.fecha := valorAlto;
 end;
-{   --RECIBE UN VECTOR DE REGISTROS Y RETORNA EL MINIMO POR DESTINO FECHA Y HORA, EN EL PARAMETRO MIN.
+{   --RECIBE UN VECTOR DE REGISTROS Y RETORNA EL MINIMO POR FECHA Y COD, EN EL PARAMETRO MIN.
     --ACTUALIZA Y RETORNA EL VECTOR DE REGISTROS LEYENDO EL SIGUIENTE DATO DEL DETALLE CORRESPONDIENTE    }
 procedure minimo(var regs: vec_reg; var dets: vec_det; var min: venta);
 var
     minPos, i : integer;
 begin
 
-    min := regs[1];
+    minPos := 0;
+
+    min.fecha := valorAlto;
+    min.cod := 9999;
 
     //Recorrer los reg detalle, consiguiendo la posicion del minimo
-    for i := 2 to dimF do 
-        if((regs[i].fecha < min.fecha) or ((regs[i].fecha = min.fecha) and (regs[i].cod < min.cod))) then minPos := i;
-
+    for i := 1 to dimF do begin
+        if(regs[i].fecha <= min.fecha) then begin
+            if(regs[i].cod <= min.cod) then begin
+                min := regs[i];
+                minPos := i;
+            end; 
+        end;
+    end;
 
     //El registro minimo es el que esta en la posicion minPos 
     min := regs[minPos];
 
     //Leer en el archivo detalle correspondiente, almacenar el siguiente registro en el vector de reg
-    leerDet(dets[minPos],regs[minPos]);
+	if (minPos <> 0) then
+		leerDet(dets[minPos], regs[minPos]);
 end;
 
 procedure ActualizarMaestro(var mae: maestro; var dets: vec_det; var regs: vec_reg);
