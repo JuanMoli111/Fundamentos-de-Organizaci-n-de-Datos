@@ -168,7 +168,7 @@ end;
 
 procedure ModificarNovela(var arc: archivo);
 var
-    reg, new: novela;
+    reg: novela;
     encontro: boolean;
     cod: integer;
 begin
@@ -227,7 +227,7 @@ end;
 procedure EliminarNovela(var arc: archivo);
 var
     reg, regCab: novela;
-    cod, codAct, pos: integer;
+    cod: integer;
     encontro : boolean;
 begin
 
@@ -316,7 +316,7 @@ begin
     leer(arc,reg);
 
     //Si el cabecera es una novela eliminada, exportarla al txt
-    if(reg.cod < 0) then write(texto,cod,'       ',duracion,'      ',precio,'   ',nombre,'        ',genero,'        ',director);
+    if(reg.cod < 0) then with reg do write(texto,cod,'       ',duracion,'      ',precio,'   ',nombre,'        ',genero,'        ',director);
 
     //Leer primer registro
     leer(arc,reg);
