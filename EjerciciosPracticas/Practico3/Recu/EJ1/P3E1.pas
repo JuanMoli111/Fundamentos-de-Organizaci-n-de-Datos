@@ -294,23 +294,7 @@ begin
             close(mae);
 
 
-    {if(exito) then begin 
-
-        //Leer registros hasta el final del archivo
-        while(not(eof(mae)))do read(mae, regm);
-
-        //seek a la posicion a sobreescribir
-        seek(mae,savePos);
-        //Escribir alli el ultimo registro leido
-        write(mae,regm);
-
-        //truncar archivo
-    end;}
-
-
     eliminarEmpleado := exito;
-
-end;
 var
     opc: integer;
     arc_bin: arc_emp;
@@ -354,5 +338,6 @@ begin
         end;
 
     until(opc = 0);
+
 
 end.

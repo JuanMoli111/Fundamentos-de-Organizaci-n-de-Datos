@@ -58,6 +58,7 @@ begin
     reset(arc_logico);
 
 
+
     while(e.apellido <> 'fin') do begin
 
         write(arc_logico,e);
