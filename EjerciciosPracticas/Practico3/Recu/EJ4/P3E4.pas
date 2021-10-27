@@ -109,11 +109,12 @@ begin
     close(arc);
 
 end;
-//Revisar para soluciones mas eficientes: 
+//Revisar : 
 
-//      al saltear el cabecera podria salvarlo y realizar luego menos operaciones
+//      al saltear el cabecera podria salvarla y realizar asi menos operaciones
 
 
+//Ejercicio 5 
 procedure EliminarRevista(var arc: tArchRevistas; titulo : string);
 var
     reg, regCab: tTitulo;
