@@ -186,6 +186,8 @@ begin
     
         //Saltear reg cabecera
         leer(arc,reg);
+
+
         //Leer primer reg novela
         leer(arc,reg);
 
@@ -245,6 +247,7 @@ begin
 
         //Saltear reg cabecera
         leer(arc,reg);
+
         //Leer primer reg novela
         leer(arc,reg);
 
@@ -297,6 +300,43 @@ begin
 
     close(arc);
 end;
+procedure ExportarTxt(var arc: archivo);
+var
+    texto: text;
+    reg: novela;
+begin
+    //Abrir arc binario
+    reset(arc);
+
+    //Assign y crear arc de texto
+    assign(texto,'texto.txt');
+    rewrite(texto);
+
+    //Saltear registro cabecera
+    leer(arc,reg);
+
+    //Si el cabecera es una novela eliminada, exportarla al txt
+    if(reg.cod < 0) then write(texto,cod,'       ',duracion,'      ',precio,'   ',nombre,'        ',genero,'        ',director);
+
+    //Leer primer registro
+    leer(arc,reg);
+
+    //Mientras haya registros novela
+    while(reg.cod <> valorAlto) do begin
+        
+        //Si cod distinto de cero exportar a texto, ya sea negativo (novela eliminada logicamente) o positivo, novela existente
+        if(reg.cod <> 0) then
+            with reg do write(texto,cod,'       ',duracion,'      ',precio,'   ',nombre,'        ',genero,'        ',director);
+        
+        //Leer siguiente registro
+        leer(arc,reg);
+    end;
+
+    //Cerrar archivos
+    close(texto);
+    close(arc);
+
+end;
 
 var
     arc: archivo;
@@ -319,6 +359,7 @@ begin
         writeln('1- Dar de alta una novela');
         writeln('2- Modificar una novela');
         writeln('3- Eliminar una novela');
+        writeln('4- Listar en txt');
 
         writeln();  writeln('0- EXIT');
         writeln();
@@ -342,6 +383,8 @@ begin
                     EliminarNovela(arc);
                     ImprimirArchivo(arc);
                 end;
+
+            4: ExportarTxt(arc);
             
             
         end;
