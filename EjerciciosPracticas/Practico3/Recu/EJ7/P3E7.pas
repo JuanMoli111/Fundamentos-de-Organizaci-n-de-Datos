@@ -129,7 +129,7 @@ begin
 end;
 var
     arch : archivo;
-
+ 
 begin
     
     assign(arch,'aves');

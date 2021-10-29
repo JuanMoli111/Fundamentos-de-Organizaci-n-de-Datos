@@ -1,4 +1,6 @@
 program ej3;
+
+uses SysUtils;
 {                       PRECONDICIONES
                 
                 *  1 - EXISTE UN MAESTRO Y 30 DETALLES TODOS ORDENADOS POR COD DE PROD
@@ -41,6 +43,42 @@ type
     vec_detalles = array[1..dimF] of detalle_ventas;
     vec_reg = array[1..dimF] of venta;
 
+
+    
+//DEVOLVER SIGUIENTE REGISTRO DE UN ARCHIVO, SI ES EOF DEVOLVER UN VALOR DE CORTE
+procedure leerDet(var arc: detalle_ventas; var dato: venta);
+begin
+    if(not(eof(arc))) then
+        read(arc,dato)
+    else
+        dato.cod := valorAlto;
+end;    
+    
+{   --RECIBE UN VECTOR DE REGISTROS Y RETORNA EL MINIMO POR CODIGO DE PRODUCTO, EN EL PARAMETRO MIN.
+    --ACTUALIZA Y RETORNA EL VECTOR DE REGISTROS LEYENDO EL SIGUIENTE DATO DEL DETALLE CORRESPONDIENTE    }
+procedure minimo(var vec_reg: vec_reg; vec_det: vec_detalles; var min: venta);
+var
+    minPos, i : integer;
+begin
+
+    minPos := 0;
+
+    min.cod := valorAlto;
+
+    //Recorrer los reg detalle, consiguiendo la posicion del minimo
+    for i := 1 to dimF do begin
+        if((vec_reg[i].cod) < min.cod) then begin
+            minPos := i;
+            min := vec_reg[i];
+        end;
+    end;
+
+    //Leer en el archivo detalle correspondiente, almacenar el siguiente registro en el vector de reg
+	if (minPos <> 0) then
+		leerDet(vec_det[minPos], vec_reg[minPos]);
+
+end;
+//DECLARACION DE VARIABLES
 var
     vec_det : vec_detalles;
 
@@ -56,36 +94,6 @@ var
 
     codAct, i, totVendido : integer;
 
-    str : string;
-    
-//DEVOLVER SIGUIENTE REGISTRO DE UN ARCHIVO, SI ES EOF DEVOLVER UN VALOR DE CORTE
-procedure leerDet(var arc: detalle_ventas; var dato: venta);
-begin
-    if(not(eof(arc))) then
-        read(arc,dato)
-    else
-        dato.cod := valorAlto;
-end;    
-    
-{   --RECIBE UN VECTOR DE REGISTROS Y RETORNA EL MINIMO POR CODIGO DE PRODUCTO, EN EL PARAMETRO MIN.
-    --ACTUALIZA Y RETORNA EL VECTOR DE REGISTROS LEYENDO EL SIGUIENTE DATO DEL DETALLE CORRESPONDIENTE    }
-procedure minimo(var vec_reg: vec_reg; var min: venta);
-var
-    minPos, i : integer;
-begin
-
-    //Recorrer los reg detalle, consiguiendo la posicion del minimo
-    for i := 1 to dimF do begin
-        if((vec_reg[i].cod) < min.cod) then minPos := i;
-    end;
-    //El registro minimo es el que esta en la posicion minPos 
-    min := vec_reg[minPos];
-
-    //Leer en el archivo detalle correspondiente, almacenar el siguiente registro en el vector de reg
-    leerDet(vec_det[minPos],vec_reg[minPos]);
-end;
-//DECLARACION DE VARIABLES
-
 //PROGRAMA PRINCIPAL
 begin
 
@@ -100,9 +108,8 @@ begin
     //Assign y creacion de los 30 archivos detalle
     for i := 1 to dimF do begin
 
-        Str(i,str);
 
-        assign(vec_det[i],'det' + str);
+        assign(vec_det[i],'det' + IntToStr(i));
         reset(vec_det[i]);
     
         //Guarda el primer registro de cada detalle en la iésima posicion del vector de registros de ventas
@@ -111,7 +118,7 @@ begin
     end;
 
     //Calcular el reg minimo 
-    minimo(vec_ventas,min);
+    minimo(vec_ventas,vec_det,min);
 
     //Leer el primer registro producto
     if(min.cod <> valorAlto) then read(maestro,prod);
@@ -127,7 +134,7 @@ begin
         //Mientras el cod del reg min sea el mismo, totalizar sus ventas
         while(codAct = min.cod) do begin
             totVendido += min.cant;
-            minimo(vec_ventas,min);
+            minimo(vec_ventas,vec_det,min);
         end;
 
         //Buscar el producto con ese codigo dentro del maestro (SEGURO EXISTE)

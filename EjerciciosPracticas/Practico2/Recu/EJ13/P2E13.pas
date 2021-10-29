@@ -28,8 +28,8 @@ type
 
     //Este registro representa un mail enviado
     mail = record
-        nro_user, nro_destino: str25;
-        cuerpoMensaje: string[400];
+        nro_user, nro_destino: integer;
+        cuerpoMensaje: string[200];
     end;
 
     //Tipo archivo maestro
@@ -52,7 +52,7 @@ begin
     if(not(eof(mae))) then
         read(mae,dato)
     else
-        dato.nro_user := valorAlto;
+        dato.nro := valorAlto;
 end;
 
 //PROCEDIMIENTO DE ACTUALIZACION DE ARCHIVO MAESTRO
@@ -69,7 +69,7 @@ var
     nroAct, totMail: integer;
 begin
 
-    //Abrir archivos
+    //Abrir archivos 
     reset(mae);
     reset(det);
 
@@ -93,7 +93,7 @@ begin
         end;
 
         //Leer el maestro hasta encontrar el registro correspondiente a este usuario
-        while(nroAct <> regm.nro_user) do read(mae,regm);
+        while(nroAct <> regm.nro) do read(mae,regm);
 
 
         //Actualizar la cantidad de mails enviados por el usuario
@@ -150,22 +150,21 @@ begin
     leerMae(mae,regm);
     leerDet(det,regd);
 
-
     //DEBO RECORRER TODO EL ARCHIVO MAESTRO, RECORRIENDO EN "SEGUNDO PLANO" (CICLO INTERNO) EL REGISTRO DETALLE.
     //PARA AQUELLOS REGISTROS MAESTRO SIN CORRESPONDIENTE EN EL DETALLE, SIGNIFICA QUE NO ENVIARON MAILS EN
     //ESE DIA, DEBEMOS INFORMAR SU NRO DE USUARIO Y CERO MENSAJES ENVIADOS, PARA LOS REGISTROS MAESTRO
     //QUE POSEAN REGISTROS DETALLE CORRESPONDIENTES, DEBE CONTABILIZARSE SUS MAILS Y LISTARLOS
 
     //Mientras existan registros maestro
-    while(regm.nro_user <> valorAlto) do begin
+    while(regm.nro <> valorAlto) do begin
 
         //El nro actual el registro detalle
         nroAct := regd.nro_user;
         totMail := 0;
 
         //Hasta que no encuentre el reg maestro correspondiente al detalle leido, listar users con cero mails
-        while(nroAct <> regm.nro_user) do begin
-            writeln(texto,regm.nro_user,'        ',totMail);
+        while(nroAct <> regm.nro) do begin
+            writeln(texto,regm.nro,'        ',totMail);
             leerMae(mae,regm);
         end;
 
@@ -214,6 +213,7 @@ begin
     assign(maestro,'maestro');
     assign(detalle,'detalleDia');
 
+    rewrite(maestro);   rewrite(detalle);
 
     //Llamar a los procedimientos correspondientes
 

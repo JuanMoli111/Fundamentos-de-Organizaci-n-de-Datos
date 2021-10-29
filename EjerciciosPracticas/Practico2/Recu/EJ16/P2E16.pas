@@ -76,8 +76,6 @@ begin
         end;
     end;
 
-    //El registro minimo es el que esta en la posicion minPos 
-    min := regs[minPos];
 
     //Leer en el archivo detalle correspondiente, almacenar el siguiente registro en el vector de reg
 	if (minPos <> 0) then

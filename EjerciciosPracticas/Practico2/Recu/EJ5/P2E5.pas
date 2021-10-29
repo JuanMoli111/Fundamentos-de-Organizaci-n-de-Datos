@@ -76,6 +76,67 @@ type
     vec_reg_dec = array[1..dimF] of deceso;
 
     
+//DEVOLVER SIGUIENTE REGISTRO DE UN ARCHIVO DETALLE DE NACIMIENTOS , SI ES EOF DEVOLVER UN VALOR DE CORTE
+procedure leerDetNac(var arc: detalle_nacimientos; var dato: nacimiento);
+begin
+    if(not(eof(arc))) then
+        read(arc,dato)
+    else
+        dato.nroPartida := valorAlto;
+end;    
+//DEVOLVER SIGUIENTE REGISTRO DE UN ARCHIVO DETALLE DE DECESOS, SI ES EOF DEVOLVER UN VALOR DE CORTE
+procedure leerDetDec(var arc: detalle_decesos; var dato: deceso);
+begin
+    if(not(eof(arc))) then
+        read(arc,dato)
+    else
+        dato.nroPartida := valorAlto;
+end;    
+{--RECIBE UN VECTOR DE REGISTROS DE NACIMIENTOS Y RETORNA EL MINIMO POR NRO PARTIDA DE NACIMIENTO, EN EL PARAMETRO MIN.
+ --ACTUALIZA Y RETORNA EL VECTOR DE REGISTROS LEYENDO EL SIGUIENTE DATO DEL DETALLE CORRESPONDIENTE    }
+procedure minimoNac(var vec_reg: vec_reg_nac; var dets: vec_det_nac; var min: nacimiento);
+var
+    minPos, i : integer;
+begin
+
+    minPos := 0;
+    min.nroPartida := valorAlto;
+
+    //Recorrer los reg detalle, consiguiendo la posicion del minimo
+    for i := 1 to dimF do begin
+        if(vec_reg[i].nroPartida < min.nroPartida) then begin
+            minPos := i;
+            min := vec_reg[i];
+        end;
+    end;
+
+
+    //Leer en el archivo detalle correspondiente, almacenar el siguiente registro en el vector de reg
+    if(minPos <> 0) then
+        leerDetNac(dets[minPos],vec_reg[minPos]);
+end;
+{   --RECIBE UN VECTOR DE REGISTROS DE DECESOS Y RETORNA EL MINIMO POR NRO PARTIDA DE NACIMIENTO, EN EL PARAMETRO MIN.
+    --ACTUALIZA Y RETORNA EL VECTOR DE REGISTROS LEYENDO EL SIGUIENTE DATO DEL DETALLE CORRESPONDIENTE    }
+procedure minimoDec(var vec_reg: vec_reg_dec;var dets: vec_det_dec; var min: deceso);
+var
+    minPos, i : integer;
+begin
+
+    minPos := 0;
+    min.nroPartida := valorAlto;
+
+    //Recorrer los reg detalle, consiguiendo la posicion del minimo
+    for i := 1 to dimF do begin
+        if(vec_reg[i].nroPartida < min.nroPartida) then begin
+            minPos := i;
+            min := vec_reg[i];
+        end;
+    end;
+
+    //Leer en el archivo detalle correspondiente, almacenar el siguiente registro en el vector de reg
+    if(minPos <> 0) then
+        leerDetDec(dets[minPos],vec_reg[minPos]);
+end;
 //DECLARACION DE VARIABLES
 var
 
@@ -96,52 +157,6 @@ var
     regM: persona;
 
     i : integer;
-
-
-//DEVOLVER SIGUIENTE REGISTRO DE UN ARCHIVO DETALLE DE NACIMIENTOS , SI ES EOF DEVOLVER UN VALOR DE CORTE
-procedure leerDetNac(var arc: detalle_nacimientos; var dato: nacimiento);
-begin
-    if(not(eof(arc))) then
-        read(arc,dato)
-    else
-        dato.nroPartida := valorAlto;
-end;    
-//DEVOLVER SIGUIENTE REGISTRO DE UN ARCHIVO DETALLE DE DECESOS, SI ES EOF DEVOLVER UN VALOR DE CORTE
-procedure leerDetDec(var arc: detalle_decesos; var dato: deceso);
-begin
-    if(not(eof(arc))) then
-        read(arc,dato)
-    else
-        dato.nroPartida := valorAlto;
-end;    
-{--RECIBE UN VECTOR DE REGISTROS DE NACIMIENTOS Y RETORNA EL MINIMO POR NRO PARTIDA DE NACIMIENTO, EN EL PARAMETRO MIN.
- --ACTUALIZA Y RETORNA EL VECTOR DE REGISTROS LEYENDO EL SIGUIENTE DATO DEL DETALLE CORRESPONDIENTE    }
-procedure minimoNac(var vec_reg: vec_reg_nac; var min: nacimiento);
-var
-    minPos, i : integer;
-begin
-    //Recorrer los reg detalle, consiguiendo la posicion del minimo
-    for i := 1 to dimF do if(vec_reg[i].nroPartida < min.nroPartida) then minPos := i;
-    //El registro minimo es el que esta en la posicion minPos 
-    min := vec_reg[minPos];
-
-    //Leer en el archivo detalle correspondiente, almacenar el siguiente registro en el vector de reg
-    leerDetNac(vec_arc_nac[minPos],vec_reg[minPos]);
-end;
-{   --RECIBE UN VECTOR DE REGISTROS DE DECESOS Y RETORNA EL MINIMO POR NRO PARTIDA DE NACIMIENTO, EN EL PARAMETRO MIN.
-    --ACTUALIZA Y RETORNA EL VECTOR DE REGISTROS LEYENDO EL SIGUIENTE DATO DEL DETALLE CORRESPONDIENTE    }
-procedure minimoDec(var vec_reg: vec_reg_dec; var min: deceso);
-var
-    minPos, i : integer;
-begin
-    //Recorrer los reg detalle, consiguiendo la posicion del minimo
-    for i := 1 to dimF do if(vec_reg[i].nroPartida < min.nroPartida) then minPos := i;
-    //El registro minimo es el que esta en la posicion minPos 
-    min := vec_reg[minPos];
-
-    //Leer en el archivo detalle correspondiente, almacenar el siguiente registro en el vector de reg
-    leerDetDec(vec_arc_dec[minPos],vec_reg[minPos]);
-end;
 
 begin
 
@@ -168,8 +183,8 @@ begin
     end;
 
     //Calcular el minimos para los nacimientos y los decesos
-    minimoNac(vec_nac,minNac);
-    minimoDec(vec_dec,minDec);
+    minimoNac(vec_nac,vec_arc_nac,minNac);
+    minimoDec(vec_dec,vec_arc_dec,minDec);
 
     //Mientras hayan datos en los detalles
     while(minNac.nroPartida <> valorAlto) do begin
@@ -198,8 +213,8 @@ begin
             end;
 
             //AVANZAR EN LOS ARCHIVOS DE NAC Y DE DECESOS
-            minimoNac(vec_nac,minNac);
-            minimoDec(vec_dec,minDec);
+            minimoNac(vec_nac,vec_arc_nac,minNac);
+            minimoDec(vec_dec,vec_arc_dec,minDec);
         end
         //Si no el nacimiento actual no fallecio 
         else begin
@@ -215,7 +230,7 @@ begin
                 lugar := 'NONE';
             end;
             //AVANZAR SOLO EN EL ARCHIVO DE NAC Y HASTA ENCONTRARSE EL NAC CORRESPONDIENTE AL DECESO MIN
-            minimoNac(vec_nac,minNac);
+            minimoNac(vec_nac,vec_arc_nac,minNac);
 
         end;
 

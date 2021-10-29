@@ -64,7 +64,6 @@ var
 begin
 
     minPos := 0;
-
     min.cod := valorAlto;
 
     //Recorrer los reg detalle, consiguiendo la posicion del minimo
@@ -75,8 +74,6 @@ begin
         end;
     end;
 
-    //El registro minimo es el que esta en la posicion minPos 
-    min := regs[minPos];
 
     //Leer en el archivo detalle correspondiente, almacenar el siguiente registro en el vector de reg
 	if (minPos <> 0) then

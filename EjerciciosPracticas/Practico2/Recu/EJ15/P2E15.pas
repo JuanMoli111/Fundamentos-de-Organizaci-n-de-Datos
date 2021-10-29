@@ -37,7 +37,7 @@ type
     end;
 
 
-    //La representacion es la misma razón de que pueden usarse el mismo tipo de reg
+    //La representacion es la misma, razón de que pueden usarse el mismo tipo de reg
     //tanto para mae como para detalle y no definir un registro extra
     pago = record
         dni, cod: integer;

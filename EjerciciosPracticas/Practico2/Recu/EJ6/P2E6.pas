@@ -50,6 +50,39 @@ type
     vec_detalles = array [1..dimF] of arc_detalle;
     vec_reg_det = array[1..dimF] of venta;
 
+
+//DEVOLVER SIGUIENTE REGISTRO DE UN ARCHIVO, SI ES EOF DEVOLVER UN VALOR DE CORTE
+procedure leerDet(var arc: arc_detalle; var dato: venta);
+begin
+    if(not(eof(arc))) then
+        read(arc,dato)
+    else
+        dato.cod := valorAlto;
+end;    
+
+{   --RECIBE UN VECTOR DE REGISTROS Y RETORNA EL MINIMO POR CODIGO DE ARTICULO, EN EL PARAMETRO MIN.
+    --ACTUALIZA Y RETORNA EL VECTOR DE REGISTROS LEYENDO EL SIGUIENTE DATO DEL DETALLE CORRESPONDIENTE    }
+procedure minimo(var vec_reg: vec_reg_det; var dets: vec_detalles; var min: venta);
+var
+    minPos, i : integer;
+begin
+
+    minPos := 0;
+    min.cod := valorAlto;
+
+    //Recorrer los reg detalle, consiguiendo la posicion del minimo
+    for i := 1 to dimF do begin
+        if(vec_reg[i].cod < min.cod) then begin
+            minPos := i;
+            min := vec_reg[i];
+        end;
+    end;
+
+
+    //Leer en el archivo detalle correspondiente, almacenar el siguiente registro en el vector de reg
+    if(minPos <> 0) then 
+        leerDet(dets[minPos],vec_reg[minPos]);
+end;
 //DECLARACION DE VARIABLES
 var
     vec_det : vec_detalles;
@@ -64,32 +97,6 @@ var
     min : venta;
 
     i, codAct, totVendido: integer;
-
-//DEVOLVER SIGUIENTE REGISTRO DE UN ARCHIVO, SI ES EOF DEVOLVER UN VALOR DE CORTE
-procedure leerDet(var arc: arc_detalle; var dato: venta);
-begin
-    if(not(eof(arc))) then
-        read(arc,dato)
-    else
-        dato.cod := valorAlto;
-end;    
-
-{   --RECIBE UN VECTOR DE REGISTROS Y RETORNA EL MINIMO POR CODIGO DE ARTICULO, EN EL PARAMETRO MIN.
-    --ACTUALIZA Y RETORNA EL VECTOR DE REGISTROS LEYENDO EL SIGUIENTE DATO DEL DETALLE CORRESPONDIENTE    }
-procedure minimo(var vec_reg: vec_reg_det; var min: venta);
-var
-    minPos, i : integer;
-begin
-
-    //Recorrer los reg detalle, consiguiendo la posicion del minimo
-    for i := 1 to dimF do if(vec_reg[i].cod < min.cod) then minPos := i;
-
-    //El registro minimo es el que esta en la posicion minPos 
-    min := vec_reg[minPos];
-
-    //Leer en el archivo detalle correspondiente, almacenar el siguiente registro en el vector de reg
-    leerDet(vec_det[minPos],vec_reg[minPos]);
-end;
 
 //PROGRAMA PRINCIPAL
 begin
@@ -111,7 +118,7 @@ begin
         leerDet(vec_det[i],vec_reg[i]);
     end;
 
-    minimo(vec_reg,min);
+    minimo(vec_reg,vec_det,min);
 
 
     while(min.cod <> valorAlto) do begin
@@ -126,7 +133,7 @@ begin
         //Mientras el articulo sea el mismo, totalizar la cantidad vendida, leer otro articulo
         while(codAct = min.cod) do begin
             totVendido += min.cant;
-            minimo(vec_reg,min);
+            minimo(vec_reg,vec_det,min);
         end;
 
         //Recorrer el maestro hasta encontrar el articulo a actualizar

@@ -38,6 +38,39 @@ type
     vec_arc_det = array[1..dimF] of arc_detalle;
     vec_reg_det = array[1..dimF] of censoData;
 
+
+//Leer el siguiente registro del archivo, si es EOF devolver un valor de corte
+procedure leer(var arc: arc_detalle; var dato: censoData);
+begin
+    if(not(eof(arc))) then
+        read(arc,dato)
+    else
+        dato.nom := valorAlto;
+end;
+
+{   --RECIBE UN VECTOR DE REGISTROS Y RETORNA EL MINIMO POR NOMBRE PROVINCIA, EN EL PARAMETRO MIN.
+    --ACTUALIZA Y RETORNA EL VECTOR DE REGISTROS LEYENDO EL SIGUIENTE DATO DEL DETALLE CORRESPONDIENTE    }
+procedure minimo (var regs: vec_reg_det; var dets: vec_arc_det; var min: censoData);
+var 
+    i, posMin: integer;
+begin
+
+	posMin:= 0;
+	min.nom := valoralto;
+
+    //Calcular la pos donde se encuentra el registro minimo, actualizar el registro minimo
+	for i := 1 to dimF do begin
+		if(regs[i].nom <= min.nom) then begin
+			min := regs[i];
+			posMin := i;	
+		end;
+	end;
+
+    //Si la pos se actualizo, leer el siguiente registro en la pos donde se leyo el anterior
+	if (posMin <> 0) then
+		leer(dets[posMin], regs[posMin]);
+end;
+
 var
 
     maestro : arc_maestro;
@@ -53,34 +86,6 @@ var
     provAct : str25;
     
     i, totAlf, totEnc: integer;
-
-//Leer el siguiente registro del archivo, si es EOF devolver un valor de corte
-procedure leer(var arc: arc_detalle; var dato: censoData);
-begin
-    if(not(eof(arc))) then
-        read(arc,dato)
-    else
-        dato.nom := valorAlto;
-end;
-
-
-{   --RECIBE UN VECTOR DE REGISTROS Y RETORNA EL MINIMO POR NOMBR DE PROVINCIA, EN EL PARAMETRO MIN.
-    --ACTUALIZA Y RETORNA EL VECTOR DE REGISTROS LEYENDO EL SIGUIENTE DATO DEL DETALLE CORRESPONDIENTE    }
-procedure minimo(var vec_reg: vec_reg_det; var min: censoData);
-var
-    minPos, i : integer;
-begin
-
-    //Recorrer los reg detalle, consiguiendo la posicion del minimo
-    for i := 1 to dimF do if((vec_reg[i].nom) < min.nom) then minPos := i;
-
-    //El registro minimo es el que esta en la posicion minPos 
-    min := vec_reg[minPos];
-
-    //Leer en el archivo detalle correspondiente, almacenar el siguiente registro en el vector de reg
-    leer(vec_det[minPos],vec_reg[minPos]);
-end;
-
 
 //PROGRAMA PRINCIPAL
 begin
@@ -100,7 +105,7 @@ begin
     end;
 
     //Calcular el registro minimo dentro de los archivos detalle
-    minimo(vec_reg,min);
+    minimo(vec_reg,vec_det,min);
 
     //Leer primer registro maestro
     if(min.nom <> valorAlto) then read(maestro,regm);
@@ -117,7 +122,7 @@ begin
         while(provAct = min.nom) do begin
             totEnc += min.encuestados;
             totAlf += min.alfabetizados;
-            minimo(vec_reg,min);
+            minimo(vec_reg,vec_det,min);
         end;
 
         //Buscar el registro maestro correspondiente al registro detalle leido

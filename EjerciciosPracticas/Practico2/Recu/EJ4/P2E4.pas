@@ -36,14 +36,7 @@ type
 
     vec_reg_det = array[1..dimF] of sesion;
 
-var
-    vec_det : vec_detalles;
-    vec_reg : vec_reg_det;
 
-    maestro : arc_sesiones;
-
-    i: integer;
-    str : string;
 
 //DEVOLVER SIGUIENTE REGISTRO DE UN ARCHIVO, SI ES EOF DEVOLVER UN VALOR DE CORTE
 procedure leerDet(var arc: arc_sesiones; var dato: sesion);
@@ -56,23 +49,31 @@ end;
 
 {   --RECIBE UN VECTOR DE REGISTROS Y RETORNA EL MINIMO POR CODIGO DE USUARIO Y FECHA, EN EL PARAMETRO MIN.
     --ACTUALIZA Y RETORNA EL VECTOR DE REGISTROS LEYENDO EL SIGUIENTE DATO DEL DETALLE CORRESPONDIENTE    }
-procedure minimo(var vec_reg: vec_reg_det; var min: sesion);
+procedure minimo(var vec_reg: vec_reg_det;var vec_det: vec_detalles; var min: sesion);
 var
     minPos, i : integer;
 begin
 
+    minPos := 0;
+    min.cod := valorAlto;
+    min.fecha := 'ZZZZZZ';
+
     //Recorrer los reg detalle, consiguiendo la posicion del minimo
     for i := 1 to dimF do begin
-        if((vec_reg[i].cod < min.cod) or ((vec_reg[i].cod < min.cod) and (vec_reg[i].fecha < min.fecha))) then minPos := i;
+        if(vec_reg[i].cod < min.cod) then begin
+            if (vec_reg[i].fecha < min.fecha) then begin
+                minPos := i;
+                min := vec_reg[i];
+            end;
+        end;
     end;
-    //El registro minimo es el que esta en la posicion minPos 
-    min := vec_reg[minPos];
 
     //Leer en el archivo detalle correspondiente, almacenar el siguiente registro en el vector de reg
-    leerDet(vec_det[minPos],vec_reg[minPos]);
+    if(minPos <> 0) then 
+        leerDet(vec_det[minPos],vec_reg[minPos]);
 end;
 {   GENERAR ARC MAESTRO TOTALIZANDO LOS TIEMPOS DE LAS SESIONES DE LOS ARCHIVOS DETALLE}
-procedure generarMaestro(var vec_reg: vec_reg_det; var arc_mae: arc_sesiones);
+procedure generarMaestro(var vec_reg: vec_reg_det; var arc_mae: arc_sesiones; var vec_det: vec_detalles);
 var
     min, regm: sesion;
     codAct: integer;
@@ -87,7 +88,7 @@ begin
 
 
     //Calcular el reg minimo 
-    minimo(vec_reg,min);
+    minimo(vec_reg,vec_det,min);
 
     //Mientras haya sesiones en los arc detalle
     while(min.cod <> valorAlto) do begin
@@ -108,7 +109,7 @@ begin
 
                 totTiempo += min.tiempo;
 
-                minimo(vec_reg,min);
+                minimo(vec_reg,vec_det,min);
             end;
                 
             //Guardar en el registro el tiempo total de la sesiones del usuario
@@ -123,6 +124,14 @@ begin
 
     close(arc_mae);
 end;
+
+var
+    vec_det : vec_detalles;
+    vec_reg : vec_reg_det;
+
+    maestro : arc_sesiones;
+
+    i: integer;
 //PROGRAMA PRINCIPAL
 begin
 
@@ -138,7 +147,7 @@ begin
     end;
 
 
-    generarMaestro(vec_reg,maestro);
+    generarMaestro(vec_reg,maestro,vec_det);
 
 
     //Cerrar archivos detalle
