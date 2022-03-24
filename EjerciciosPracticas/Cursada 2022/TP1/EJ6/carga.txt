@@ -1,0 +1,12 @@
+15 20.5 marca4
+aaa
+15 20 hay-stock
+15 20.5 marca4
+aaa
+15 30 hay-stock
+15 20.5 marca4
+naaa
+15 10 no-stock
+15 20.5 marca4
+aaa
+15 20 no-stock

@@ -1,4 +1,4 @@
-program ej4;
+program P3E4;
 uses SysUtils;
 
 const

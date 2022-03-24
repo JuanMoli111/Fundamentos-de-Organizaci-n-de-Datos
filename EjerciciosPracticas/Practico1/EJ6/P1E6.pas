@@ -1,4 +1,4 @@
-program ej6;
+program P1E6;
 type
 
     str25 = string[25];

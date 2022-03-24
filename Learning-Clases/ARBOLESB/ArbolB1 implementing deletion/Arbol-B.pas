@@ -31,7 +31,8 @@ Type
 
     //Un arbol B compuesto por un arreglo con las direcciones efectivas de los hijos
     //un arreglo para las claves osea los datos efectivos a almacenar
-    //y un contador de nro registros que contabiliza la cantidad de datos en el nodo
+    //y un contador de nro registros que contabiliza la cantidad de datos en el nodo,
+    // un contador de registros en -1 podria significar que tal registro nodo es nulo
     reg_arbol_b = record
         hijos: array[1..maxHijos] of integer;
         claves: array[1..maxLlaves] of tipo_de_dato;
@@ -44,6 +45,12 @@ Type
 
 //Declaracion de variables
 var
+
+    //Tres variables globales de registros nodo, que podrian ser necesarias para la implementacion de la eliminacion de llaves
+    
+    nuevaRaiz, nodoRaiz, done, balanceNode: reg_arbol_b;
+
+
 
     raiz: integer;
 
@@ -121,7 +128,13 @@ begin
     tomapag := filesize(arbol);
 end;
 
+function getPagina(NRR: integer) : reg_arbol_b;
+begin
 
+    seek(arbol,NRR);
+    read(arbol,getPagina);
+
+end;
 
 procedure insertar_en_pagina(llave, hijo_d : integer; var a_pagina: reg_arbol_b);
 var
@@ -441,7 +454,139 @@ begin
     end;
 end;
 
+procedure delete(key : tipo_de_dato);
+begin
+    balanceNode.nro_registros := -1;
+    raiz = findRebalance(nodoRaiz);
+end;
 
+//Dado un registro pagina o registro nodo retornar true si es hoja, false si es un nodo interno
+function esHoja(pag: reg_arbol_b): boolean;
+var
+    i: integer;
+begin
+
+    esHoja := false;
+
+    while((i <= maxHijos) and (esHoja = false)) do begin
+        
+        if(pag.hijos[i] <> NullPointer)then esHoja := true;
+
+    end;
+    
+end;
+
+
+//Recibe un nodo y retorna la mayor llave del nodo, si no tiene elemento retorna Nulo
+function llaveMax(pag: reg_arbol_b) : tipo_de_dato;
+var
+    i: integer;
+    max : tipo_de_dato;
+begin
+    
+    max := Nulo;
+
+    //Recorrer todas las llaves del nodo, no pasa nada si alguna es Nulo
+    for i := 1 to maxLlaves do begin
+        
+        //Calcular la llave maxima
+        if(pag.claves[i] > max) then max := pag.claves[i];
+
+    end;
+
+    llaveMax := max;
+end;
+
+//Recibe una pagina nodo y retorna el integer que, mediante el arreglo de hijos, acceda a la llave mas grande encontrada
+function IndiceMaxHijo(pag : reg_arbol_b): integer;
+var
+    i, max : integer;
+    
+begin
+    
+    //Si retorna Nulo es que no habia elementos en el nodo
+    max := Nulo;
+
+    for i := 1 to maxLlaves do begin
+        
+        if pag.claves[i] > max then begin
+            IndiceMaxHijo := i;
+            max := pag.claves[i];
+        end;
+
+    end;
+
+end;
+
+//Retorna la pagina maxima entre las paginas hijas de un nodo recibido por parametro
+function paginaMax(pag: reg_arbol_b): reg_arbol_b;
+var
+    res, i: integer
+    pagReturn: reg_arbol_b;
+begin
+    res := IndiceMaxHijo(pag);
+
+    if(res <> Nulo) then begin
+        
+        leeab(res,pagReturn);
+
+        paginaMax := pagReturn;
+
+    end
+    else begin
+        //Si no tiene hijos retornar una pagina nula
+        pagReturn.nro_registros := -1;
+        paginaMax := pagReturn;
+    end;
+end;
+
+procedure findRebalance(thisNode, leftNode, rightNode, lanchor, ranchor : reg_arbol_b; llave : tipo_de_dato);
+var
+
+    removeNode, nextNode, nextLeft, nextRight, nextAncL, nextAncR: reg_arbol_b;
+
+    i : integer;
+begin
+    
+    if(thisNode.nro_registros <= minLlaves) then 
+        balanceNode.nro_registros := -1         //???   BalanceNode == NO BALANCE
+    else
+        if (balanceNode.nro_registros == -1) then balanceNode := currentNode;
+
+    
+    //Incrementar i hasta encontrar la posicion del arreglo de hijos donde estaria un siguiente nodo
+    while(i <= thisNode.nro_registros) and (thisNode.claves[i] < llave) do i += 1;
+    
+    writeln('testing i: ', i);
+    
+
+    //Node location best matching key value, nextNode sera el siguiente nodo a acceder, en este proceso recursivo buscando la llave a eliminar
+    nextNode := getPagina(thisNode.hijos[i]);
+
+
+    //si no es un nodo hoja
+    if(not(esHoja(thisNode)) then begin
+        
+
+        //Si nextNode es menor que thisNode (entonces la llave mayor de nextNode sigue siendo menor que la llave menor de thisNode)
+        if nextNode.claves[maxLlaves] <= thisNode.claves[1] then begin
+
+            //next left sera el nodo hijo que contiene la llave mas grande, entre los nodos hijos de leftNode
+            nextLeft := paginaMax(leftNode);
+
+            nextAncL := lanchor;
+
+        end
+        else
+        begin
+            //next left sera el anteultimo hijo de leftNode
+            nextLeft := getPagina(leftNode.hijos[maxHijos - 1]);      
+        end;
+
+    end;
+
+
+end;
 
 var
     //AB : arbolB;
