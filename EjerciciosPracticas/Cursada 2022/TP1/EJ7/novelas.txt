@@ -1,0 +1,6 @@
+1 20 genero
+nombr1
+2 50 terror
+nombre2
+3 80 comedia
+comedia
