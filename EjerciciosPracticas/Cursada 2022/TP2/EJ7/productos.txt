@@ -1,0 +1,10 @@
+1 20 100 20 Agua
+2 50 150 10 Gaseosa
+3 30 250 100 Yerba
+4 150 400 350 Cigarrillos
+5 10 200 50 Arroz
+6 15 250 100 Fideos
+7 60 100 20 Leche
+8 1000 20 3 Milanesa
+9 10 100 10 Harina
+10 25 30 20 Lentejas
