@@ -98,7 +98,7 @@ begin
     for i := 1 to cantE do begin
         Str(i,strIndice);
         assign(arreglo_ventas[i],'det' + strIndice);
-        reset(arreglo_ventas[i]);
+        Reset(arreglo_ventas[i]);
     
         //Guarda el primer regsitro del archivo en la iésima posicion del vector de registros de info_ventas
         leer(arreglo_ventas[i],reg_ventas[i])

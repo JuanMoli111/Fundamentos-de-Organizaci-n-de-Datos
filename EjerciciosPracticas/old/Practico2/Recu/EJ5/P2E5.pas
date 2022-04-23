@@ -1,5 +1,4 @@
-program ej5;
-uses SysUtils;
+program P2E5;
 
 {
                 PRECONDICIONES

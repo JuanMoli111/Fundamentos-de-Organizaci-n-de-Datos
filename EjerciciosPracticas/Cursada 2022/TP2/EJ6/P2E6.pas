@@ -55,8 +55,6 @@ begin
 
 end;
 
-
-
 procedure ActualizarMaestro(var mae: archivo_maestro; var vec_det: vec_archivos_detalle);
 var
 
