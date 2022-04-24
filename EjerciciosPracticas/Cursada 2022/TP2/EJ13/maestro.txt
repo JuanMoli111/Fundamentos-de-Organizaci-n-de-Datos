@@ -1,0 +1,10 @@
+1 2 a a a
+2 20 a a a
+3 40 a a a
+4 4 a a a
+5 4 a a a
+6 6 a a a
+7 10 a a a
+8 12 a a a
+9 30 a a a
+10 22 a a a
